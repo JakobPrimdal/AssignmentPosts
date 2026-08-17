@@ -2,7 +2,7 @@ import { PostCard } from "@/components/PostCard";
 import { usePosts } from "@/hooks/usePosts";
 
 export function Home() {
-  const { posts, loading, error, hasMore, loadMore, retry } = usePosts();
+  const { posts, loading, error, hasMore, loadMore, retry,removePost } = usePosts();
 
   return (
     <div className="min-h-screen bg-slate-950 font-sans text-slate-100">
@@ -13,9 +13,9 @@ export function Home() {
       </header>
 
       <main className="mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6">
-        {posts.map(post => (
-          <PostCard key={post.id} post={post} />
-        ))}
+          {posts.map(post => (
+              <PostCard key={post.id} post={post} onDeleted={removePost} />
+          ))}
 
         {loading && <p className="py-6 text-center text-slate-500">Loading posts…</p>}
 

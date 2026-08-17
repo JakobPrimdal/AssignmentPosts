@@ -19,6 +19,17 @@ export type Post = {
   // Not sent by the API, getFeed() adds it.
   author?: User;
 };
+export type Comment = {
+  id: number;
+  body: string;
+  likes: number;
+  postId: number;
+  user: {
+    id: number;
+    username: string;
+    fullName: string;
+  };
+};
 
 // The user list is always the same, so we only download it once.
 let cachedUsers: User[] | null = null;
@@ -48,4 +59,27 @@ export async function getFeed(limit: number, skip: number): Promise<{ posts: Pos
   }));
 
   return { posts, total: data.total };
+}
+//single post
+export async function getPost(id: number): Promise<Post> {
+  const response = await fetch(`${API_URL}/posts/${id}`);
+  if (!response.ok) throw new Error("Could not load post");
+
+  const post = await response.json();
+  const users = await getUsers();
+
+  return { ...post, author: users.find(user => user.id === post.userId) };
+}
+//all comments of a given post
+export async function getComments(postId: number): Promise<Comment[]> {
+  const response = await fetch(`${API_URL}/posts/${postId}/comments`);
+  if (!response.ok) throw new Error("Could not load comments");
+
+  const data = await response.json();
+  return data.comments;
+}
+
+export async function deletePost(id: number): Promise<void> {
+  const response = await fetch(`${API_URL}/posts/${id}`, { method: "DELETE" });
+  if (!response.ok) throw new Error("Could not delete post");
 }

@@ -5,7 +5,7 @@ import {useDebouncedValue} from "@/hooks/useDebouncedValue.ts";
 import {SearchBar} from "@/components/SearchBar.tsx";
 
 export function Home() {
-  const { posts, loading, error, hasMore, loadMore, retry } = usePosts();
+  const { posts, loading, error, hasMore, loadMore, retry,removePost } = usePosts();
 
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebouncedValue(search, 300);
@@ -29,9 +29,9 @@ export function Home() {
         </header>
 
       <main className="mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6">
-        {filteredPosts.map(post => (
-          <PostCard key={post.id} post={post} />
-        ))}
+          {posts.map(post => (
+              <PostCard key={post.id} post={post} onDeleted={removePost} />
+          ))}
 
         {loading && <p className="py-6 text-center text-slate-500">Loading posts…</p>}
 

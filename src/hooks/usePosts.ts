@@ -33,5 +33,10 @@ export function usePosts() {
     loadMore: () => setPage(page + 1),
     // Changing attempt makes the effect above run again.
     retry: () => setAttempt(attempt + 1),
+    //remove the post
+    removePost: (id: number) => {
+      setPosts(oldPosts => oldPosts.filter(post => post.id !== id));
+      setTotal(oldTotal => oldTotal - 1);
+    },
   };
 }

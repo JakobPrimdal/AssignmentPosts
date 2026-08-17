@@ -1,10 +1,14 @@
+import { BrowserRouter, Route, Routes } from "react-router";
+import { Home } from "@/pages/Home.tsx";
 import "./index.css";
 
 export function App() {
   return (
-    <div className="grid min-h-screen place-items-center bg-slate-950 font-sans text-slate-100">
-      <h1 className="text-4xl font-bold tracking-tight text-amber-200">Hello There</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

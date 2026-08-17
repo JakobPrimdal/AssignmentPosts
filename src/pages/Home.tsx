@@ -1,19 +1,35 @@
 import { PostCard } from "@/components/PostCard";
 import { usePosts } from "@/hooks/usePosts";
+import {useMemo, useState} from "react";
+import {useDebouncedValue} from "@/hooks/useDebouncedValue.ts";
+import {SearchBar} from "@/components/SearchBar.tsx";
 
 export function Home() {
   const { posts, loading, error, hasMore, loadMore, retry } = usePosts();
 
+  const [search, setSearch] = useState<string>("");
+  const debouncedSearch = useDebouncedValue(search, 300);
+
+  const filteredPosts = useMemo(() => {
+      const query = debouncedSearch.trim().toLowerCase();
+      if (!query)
+          return posts
+      return posts.filter(
+          post => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query)
+      );
+  }, [posts, debouncedSearch])
+
   return (
     <div className="min-h-screen bg-slate-950 font-sans text-slate-100">
-      <header className="sticky top-0 z-10 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur">
-        <div className="mx-auto max-w-2xl px-4 py-4">
-          <h1 className="text-lg font-bold tracking-tight text-amber-200">Feed</h1>
-        </div>
-      </header>
+        <header className="sticky top-0 z-10 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur">
+            <div className="mx-auto flex max-w-2xl items-center justify-center gap-4 px-4 py-4">
+                <h1 className="text-lg font-bold tracking-tight text-amber-200">Feed</h1>
+                <SearchBar value={search} onChange={setSearch} />
+            </div>
+        </header>
 
       <main className="mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6">
-        {posts.map(post => (
+        {filteredPosts.map(post => (
           <PostCard key={post.id} post={post} />
         ))}
 

@@ -29,6 +29,11 @@ export function PostCard({ post, onDeleted }: PostCardProps) {
         setDeleting(true);
         setDeleteError(null);
 
+        if (post.id < 0) {
+            onDeleted?.(post.id)
+            return
+        }
+
         try {
             await deletePost(post.id);
             onDeleted?.(post.id);

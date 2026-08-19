@@ -3,9 +3,10 @@ import { usePosts } from "@/hooks/usePosts";
 import {useMemo, useState} from "react";
 import {useDebouncedValue} from "@/hooks/useDebouncedValue.ts";
 import {SearchBar} from "@/components/SearchBar.tsx";
+import {CreatePostButton} from "@/components/CreatePostButton.tsx";
 
 export function Home() {
-  const { posts, loading, error, hasMore, loadMore, retry,removePost } = usePosts();
+  const { posts, loading, error, hasMore, loadMore, retry, removePost, addPost } = usePosts();
 
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebouncedValue(search, 300);
@@ -25,6 +26,7 @@ export function Home() {
             <div className="mx-auto flex max-w-2xl items-center justify-center gap-4 px-4 py-4">
                 <h1 className="text-lg font-bold tracking-tight text-amber-200">Feed</h1>
                 <SearchBar value={search} onChange={setSearch} />
+                <CreatePostButton onCreate={addPost} />
             </div>
         </header>
 

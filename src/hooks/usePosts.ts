@@ -3,6 +3,12 @@ import { getFeed, type Post } from "@/api/posts";
 
 const POSTS_PER_PAGE = 12;
 
+export interface NewPostInput {
+  title: string
+  body: string
+  tags: string[]
+}
+
 export function usePosts() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [total, setTotal] = useState(0);
@@ -38,5 +44,26 @@ export function usePosts() {
       setPosts(oldPosts => oldPosts.filter(post => post.id !== id));
       setTotal(oldTotal => oldTotal - 1);
     },
+    // Add a locally-created post to the top of the feed
+    addPost: (input: NewPostInput)=> {
+      const newPost: Post = {
+        id: Math.floor(Math.random() * 10000),
+        title: input.title,
+        body: input.body,
+        tags: input.tags,
+        reactions: { likes: 0, dislikes: 0},
+        views: 0,
+        userId: 0,
+        author: {
+          id: 0,
+          firstName: "You",
+          lastName: "",
+          username: "you",
+          image: "https://api.dicebear.com/7.x/initials/svg?seed=You"
+        },
+      };
+      setPosts(oldPosts => [newPost, ...oldPosts])
+      setTotal((oldTotal => oldTotal + 1))
+    }
   };
 }

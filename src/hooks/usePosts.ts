@@ -47,7 +47,7 @@ export function usePosts() {
     // Add a locally-created post to the top of the feed
     addPost: (input: NewPostInput)=> {
       const newPost: Post = {
-        id: Math.floor(Math.random() * 10000),
+        id: -Date.now(), // negative marks this as local-only, never sent to the server
         title: input.title,
         body: input.body,
         tags: input.tags,

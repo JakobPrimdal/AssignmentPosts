@@ -1,19 +1,18 @@
 import { serve } from "bun";
-import index from "./index.html";
 
 const server = serve({
-  routes: {
-    // Serve index.html for all unmatched routes.
-    "/*": index,
+  port: 3000,
 
+  routes: {
     "/api/hello": {
-      async GET(req) {
+      async GET() {
         return Response.json({
           message: "Hello, world!",
           method: "GET",
         });
       },
-      async PUT(req) {
+
+      async PUT() {
         return Response.json({
           message: "Hello, world!",
           method: "PUT",
@@ -23,18 +22,29 @@ const server = serve({
 
     "/api/hello/:name": async req => {
       const name = req.params.name;
+
       return Response.json({
         message: `Hello, ${name}!`,
       });
     },
-  },
 
-  development: process.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
-    hmr: true,
+    "/*": async req => {
+      const url = new URL(req.url);
+      let path = url.pathname;
 
-    // Echo console logs from the browser to the server
-    console: true,
+      // React Router SPA fallback
+      if (path === "/" || path.startsWith("/post/")) {
+        path = "/index.html";
+      }
+
+      const file = Bun.file(`./dist${path}`);
+
+      if (await file.exists()) {
+        return new Response(file);
+      }
+
+      return new Response("Not Found", { status: 404 });
+    },
   },
 });
 

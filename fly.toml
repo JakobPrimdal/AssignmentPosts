@@ -1,3 +1,9 @@
+# fly.toml app configuration file generated for ychatter on 2026-08-20T09:14:05+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'ychatter'
 primary_region = 'arn'
 
 [build]
